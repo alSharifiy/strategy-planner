@@ -1,0 +1,3065 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Strategy Planner</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMzEyZTgxIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNmQyOGQ5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTE2IiBmaWxsPSJ1cmwoI2cpIi8+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgb3BhY2l0eT0iLjcyIiBzdHJva2Utd2lkdGg9IjE4IiBzdHJva2UtbGluZWNhcD0icm91bmQiPgo8cGF0aCBkPSJNMTcwIDI1NiBDMjUwIDI1NiAyNjIgMTUwIDM0NiAxNTAiLz4KPHBhdGggZD0iTTE3MCAyNTYgQzI1MCAyNTYgMjUyIDM2MiAzMTggMzYyIi8+CjwvZz4KPGNpcmNsZSBjeD0iMTI4IiBjeT0iMjU2IiByPSI1MiIgZmlsbD0iI2ZmZmZmZiIvPgo8Y2lyY2xlIGN4PSIxMjgiIGN5PSIyNTYiIHI9IjI0IiBmaWxsPSIjNDMzOGNhIi8+CjxjaXJjbGUgY3g9IjM4NCIgY3k9IjE1MCIgcj0iMzgiIGZpbGw9IiNmZmZmZmYiLz4KPGNpcmNsZSBjeD0iMzg0IiBjeT0iMzYyIiByPSI2MiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJiZjI0IiBzdHJva2Utb3BhY2l0eT0iLjM4IiBzdHJva2Utd2lkdGg9IjEwIi8+CjxjaXJjbGUgY3g9IjM4NCIgY3k9IjM2MiIgcj0iMzgiIGZpbGw9IiNmYmJmMjQiLz4KPC9zdmc+">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<!-- Embedded Data Store -->
+<script id="app-data" type="application/json">null</script>
+<style>
+:root {
+  --bg-main: #f8fafc;
+  --bg-canvas: #f8fafc;
+  --panel-bg: rgba(255, 255, 255, 0.98);
+  --card-bg: #ffffff;
+  --border: #e2e8f0;
+  --border-hover: #94a3b8;
+  --border-focus: #4f46e5;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-light: #eef2ff;
+  --danger: #ef4444;
+  --danger-light: #fee2e2;
+  --success: #10b981;
+  --success-light: #ecfdf5;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.12), 0 4px 8px -2px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 20px 32px -6px rgba(15, 23, 42, 0.18);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+input, textarea, [contenteditable="true"] { user-select: text; }
+
+body {
+  font-family: var(--font-family);
+  background: var(--bg-main);
+  color: var(--text-main);
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* AUTH MODAL OVERLAY (OPTIONAL LOGIN) */
+#auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, #1e1b4b 0%, #090d16 100%);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.auth-box {
+  background: #ffffff;
+  padding: 38px 34px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  width: 390px;
+  text-align: center;
+  animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.92) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.auth-avatar {
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  margin: 0 auto 16px;
+  object-fit: cover;
+  box-shadow: 0 10px 20px -3px rgba(79, 70, 229, 0.4);
+  border: 2px solid var(--border);
+  display: block;
+}
+.auth-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+.auth-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 22px;
+  line-height: 1.4;
+}
+.auth-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  margin-bottom: 12px;
+  outline: none;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.auth-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+.auth-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 6px;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+.auth-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.auth-error {
+  color: var(--danger);
+  font-size: 13px;
+  margin-top: 10px;
+  min-height: 18px;
+}
+
+/* APP CONTAINER */
+#app {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+}
+
+/* TOP NAVBAR */
+#navbar {
+  height: 56px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 10px;
+  z-index: 50;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--text-main);
+  margin-right: 8px;
+  cursor: pointer;
+}
+.brand-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1.5px solid var(--border);
+}
+.btn-nav {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+.btn-nav:hover {
+  background: var(--bg-main);
+  border-color: #cbd5e1;
+}
+.btn-nav.primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+}
+.btn-nav.primary:hover {
+  background: var(--accent-hover);
+}
+.nav-spacer { flex: 1; }
+
+.lang-switch {
+  display: flex;
+  background: #f1f5f9;
+  padding: 2px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.lang-btn {
+  padding: 4px 9px;
+  font-size: 11.5px;
+  font-weight: 700;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.lang-btn.active {
+  background: #ffffff;
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
+}
+
+/* BREADCRUMBS BAR (FOR NESTED PAGES / SAHIFA ICHIDA SAHIFA) */
+#breadcrumbs-bar {
+  height: 40px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  z-index: 45;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.breadcrumb-item {
+  cursor: pointer;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.breadcrumb-item:hover {
+  background: var(--accent-light);
+}
+.breadcrumb-item.current {
+  color: var(--text-main);
+  font-weight: 700;
+  cursor: default;
+}
+.breadcrumb-sep {
+  color: #cbd5e1;
+  font-size: 11px;
+}
+.btn-back-crumb {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text-main);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-right: 6px;
+}
+.btn-back-crumb:hover {
+  background: var(--bg-main);
+  border-color: #cbd5e1;
+}
+
+/* CANVAS VIEWPORT */
+#canvas-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background-color: #f8fafc;
+  background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+  cursor: grab;
+}
+#canvas-container.panning {
+  cursor: grabbing;
+}
+#viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  width: 0;
+  height: 0;
+}
+#svg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100000px;
+  height: 100000px;
+  pointer-events: none;
+  overflow: visible;
+}
+#nodes-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* EMPTY CANVAS WELCOME STATE */
+#empty-canvas-state {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: #ffffff;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 40px 48px;
+  box-shadow: var(--shadow-sm);
+  display: none;
+  z-index: 5;
+}
+#empty-canvas-state .empty-icon {
+  font-size: 46px;
+  margin-bottom: 12px;
+}
+#empty-canvas-state .empty-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+#empty-canvas-state .empty-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+/* NODES - FULL TITLE WRAPPING, MULTI-LINE, NO TRUNCATION */
+.node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  min-width: 170px;
+  max-width: 280px;
+  width: auto;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  z-index: 10;
+}
+.node:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: #94a3b8;
+  z-index: 20;
+}
+.node.selected {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-light), var(--shadow-lg);
+  z-index: 30;
+}
+.node.is-root {
+  min-width: 200px;
+}
+.node-header-line {
+  height: 4px;
+  border-radius: 6px 6px 0 0;
+  background: var(--accent);
+}
+.node-inner {
+  padding: 10px 14px;
+}
+.node-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.node-icon-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  flex: 1;
+}
+.node-emoji {
+  font-size: 18px;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+/* Title wraps completely without cutting off! */
+.node-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.35;
+}
+.node-badges {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.badge-pill {
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+.badge-pill.link { background: #e0e7ff; color: #4338ca; }
+.badge-pill.subpage { background: #fef3c7; color: #b45309; }
+.badge-pill.media { background: #dcfce7; color: #15803d; }
+.badge-pill.audio { background: #fce7f3; color: #be185d; }
+
+/* Image rendered directly on the card */
+.node-card-image {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  display: block;
+}
+.node-card-desc {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.4;
+  white-space: normal;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* PLUS BUTTON (Hover / Selected) */
+.node-add-btn {
+  position: absolute;
+  bottom: -13px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  width: 26px;
+  height: 26px;
+  background: var(--accent);
+  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 40;
+  transition: transform 0.15s ease, background 0.15s;
+}
+.node:hover .node-add-btn,
+.node.selected .node-add-btn {
+  display: flex;
+  transform: translateX(-50%) scale(1);
+}
+.node-add-btn:hover {
+  background: var(--accent-hover);
+  transform: translateX(-50%) scale(1.15) !important;
+}
+
+/* SVG CONNECTOR BEZIER CURVES */
+.edge-path {
+  fill: none;
+  stroke: #94a3b8;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  transition: stroke 0.2s, stroke-width 0.2s;
+}
+.edge-path:hover {
+  stroke: var(--accent);
+  stroke-width: 3.5px;
+}
+
+/* DOCK CONTROLS */
+.canvas-dock {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--panel-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  gap: 3px;
+  z-index: 50;
+}
+.dock-btn {
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: var(--text-main);
+  transition: all 0.15s;
+}
+.dock-btn:hover {
+  background: var(--bg-main);
+  color: var(--accent);
+}
+.dock-zoom-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 3px 0;
+}
+
+/* CANVAS HINT */
+.canvas-hint {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  color: #f8fafc;
+  padding: 7px 20px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 40;
+  box-shadow: var(--shadow-lg);
+}
+
+/* FLOATING AUDIO PLAYER (Auto plays on 1-click if audio attached) */
+#floating-audio-bar {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  box-shadow: var(--shadow-xl);
+  display: none;
+  align-items: center;
+  gap: 12px;
+  z-index: 150;
+  animation: popIn 0.25s ease;
+}
+.audio-bar-info {
+  display: flex;
+  flex-direction: column;
+}
+.audio-bar-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.audio-bar-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 16px;
+}
+
+/* MEDIA LIGHTBOX (For 1-click video/image/pdf view) */
+#media-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.lightbox-header {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+}
+.lightbox-title {
+  font-size: 18px;
+  font-weight: 800;
+}
+.lightbox-close-btn {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox-close-btn:hover { background: rgba(255,255,255,0.3); }
+.lightbox-content {
+  max-width: 90vw;
+  max-height: 82vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox-content img, .lightbox-content video {
+  max-width: 100%;
+  max-height: 82vh;
+  border-radius: 10px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+.lightbox-content iframe {
+  width: 80vw;
+  height: 80vh;
+  border-radius: 10px;
+  border: none;
+}
+
+/* PREVIEW CARD MODAL (For notes / multi-item cards on 1-click) */
+#note-preview-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.note-preview-box {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 520px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+  position: relative;
+}
+.note-preview-title {
+  font-size: 19px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.note-preview-body {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-main);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* SIDEBAR INSPECTOR (2-CLICK EDITING) */
+#sidebar {
+  position: fixed;
+  top: 56px;
+  right: 0;
+  bottom: 0;
+  width: 440px;
+  background: #ffffff;
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-xl);
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+#sidebar.open {
+  transform: translateX(0);
+}
+.sidebar-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sidebar-emoji-btn {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sidebar-emoji-btn:hover { background: #e2e8f0; }
+.sidebar-title-input {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  background: transparent;
+  font-family: inherit;
+}
+.sidebar-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: var(--bg-main);
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sidebar-close-btn:hover { background: #e2e8f0; color: var(--text-main); }
+
+.sidebar-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: #fafafa;
+}
+.s-tab {
+  flex: 1;
+  padding: 11px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+.s-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: #ffffff;
+}
+
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+}
+
+.form-section {
+  margin-bottom: 20px;
+}
+.form-label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: block;
+}
+.color-picker-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.color-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.15s;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px var(--border);
+}
+.color-dot:hover, .color-dot.active {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.content-item-card {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.content-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.content-item-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.content-item-del {
+  background: transparent;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 4px;
+}
+
+.rich-textarea {
+  width: 100%;
+  min-height: 75px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  background: #ffffff;
+  outline: none;
+  font-family: inherit;
+  resize: vertical;
+}
+.rich-textarea:focus { border-color: var(--accent); }
+
+.media-preview-box {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #000;
+  max-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 6px;
+}
+.media-preview-box img, .media-preview-box video {
+  max-width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+}
+.media-preview-box audio {
+  width: 100%;
+  margin: 8px;
+}
+
+.upload-dropzone {
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  background: #ffffff;
+  transition: all 0.15s;
+}
+.upload-dropzone:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.add-block-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+.btn-add-block {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 4px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-main);
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.btn-add-block:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+.btn-add-block span {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 3px;
+}
+
+.subpage-toggle-card {
+  background: #fefce8;
+  border: 1.5px solid #fef08a;
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.subpage-toggle-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.subpage-toggle-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #854d0e;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* SETTINGS MODAL */
+#settings-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2500;
+}
+.modal-box {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  width: 390px;
+  box-shadow: var(--shadow-xl);
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* CONTEXT MENU */
+#context-menu {
+  position: fixed;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  min-width: 190px;
+  display: none;
+  z-index: 1000;
+}
+.ctx-item {
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-main);
+}
+.ctx-item:hover {
+  background: var(--bg-main);
+  color: var(--accent);
+}
+.ctx-item.danger {
+  color: var(--danger);
+}
+.ctx-item.danger:hover {
+  background: var(--danger-light);
+}
+.ctx-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+/* EMOJI PICKER POPUP */
+#emoji-popup {
+  position: fixed;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  padding: 10px;
+  display: none;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  z-index: 1100;
+  max-width: 250px;
+}
+.ep-btn {
+  font-size: 20px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+.ep-btn:hover { background: var(--bg-main); }
+
+/* TOAST */
+#toast-box {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 3000;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+#toast-box.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   TELEGRAM MINI APP + RESPONSIVE (telefon / planshet / kompyuter, tik va yotiq)
+   ========================================================================== */
+:root {
+  --nav-h: 56px;
+  --crumb-h: 40px;
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+}
+html, body {
+  height: var(--app-h, 100dvh);
+  width: 100%;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+body { position: fixed; top: 0; left: 0; right: 0; }
+button, [role="button"], .s-tab, .node { touch-action: manipulation; }
+#canvas-container { touch-action: none; }
+
+#navbar {
+  height: calc(var(--nav-h) + var(--safe-t));
+  padding: var(--safe-t) max(16px, var(--safe-r)) 0 max(16px, var(--safe-l));
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+#navbar::-webkit-scrollbar { display: none; }
+#navbar > * { flex-shrink: 0; }
+.brand-avatar { border: none; }
+
+#breadcrumbs-bar {
+  height: var(--crumb-h);
+  padding: 0 max(14px, var(--safe-r)) 0 max(14px, var(--safe-l));
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+#breadcrumbs-bar::-webkit-scrollbar { display: none; }
+#breadcrumbs-bar > *, #breadcrumbs-list > * { flex-shrink: 0; }
+
+#sidebar {
+  top: calc(var(--nav-h) + var(--safe-t));
+  width: min(440px, 100%);
+}
+#sidebar:not(.open) { box-shadow: none; visibility: hidden; transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.28s; }
+.sidebar-content {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding-bottom: calc(18px + var(--safe-b));
+}
+.canvas-dock {
+  bottom: calc(20px + var(--safe-b));
+  right: calc(16px + var(--safe-r));
+}
+#toast-box { bottom: calc(24px + var(--safe-b)); left: calc(24px + var(--safe-l)); max-width: calc(100% - 100px); }
+#floating-audio-bar { bottom: calc(24px + var(--safe-b)); left: calc(24px + var(--safe-l)); }
+.lightbox-content { max-height: calc(var(--app-h, 100dvh) - 120px); }
+.lightbox-content img, .lightbox-content video { max-height: calc(var(--app-h, 100dvh) - 120px); }
+.lightbox-header { top: calc(16px + var(--safe-t)); }
+
+button:focus-visible, .s-tab:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px), (hover: none) {
+  .canvas-hint { display: none; }
+}
+
+/* Ixcham yuqori panel: faqat ikonkalar (telefon, planshet, yotiq telefon) */
+@media (max-width: 1000px), (max-height: 500px) and (orientation: landscape) {
+  #navbar { gap: 6px; padding-left: max(10px, var(--safe-l)); padding-right: max(10px, var(--safe-r)); }
+  .brand-group { margin-right: 0; }
+  .brand-group > span { display: none; }
+  #navbar .btn-nav { height: 38px; min-width: 38px; padding: 0 10px; justify-content: center; }
+  #navbar .btn-nav [data-i18n] { display: none; }
+  .lang-btn { padding: 6px 9px; }
+}
+
+/* Telefon (tik) va tor oynalar */
+@media (max-width: 760px) {
+  :root { --nav-h: 52px; --crumb-h: 38px; }
+  .btn-nav, .btn-back-crumb, .ctx-item { min-height: 38px; }
+  .dock-btn { width: 40px; height: 40px; }
+  .canvas-dock { bottom: calc(14px + var(--safe-b)); right: calc(10px + var(--safe-r)); }
+  #toast-box { bottom: calc(14px + var(--safe-b)); left: calc(10px + var(--safe-l)); font-size: 12.5px; }
+  #floating-audio-bar { left: calc(10px + var(--safe-l)); right: calc(66px + var(--safe-r)); bottom: calc(66px + var(--safe-b)); padding: 8px 12px; }
+  .audio-bar-info { min-width: 0; flex: 1; }
+  .audio-bar-title { max-width: 100%; }
+  .rich-textarea, .auth-input, .sidebar-title-input { font-size: 16px; }
+  .note-preview-box { padding: 20px 18px; max-height: calc(var(--app-h, 100dvh) - 40px); }
+  #note-preview-modal { padding: 12px; }
+  #settings-modal { padding: 16px; }
+  .modal-box { width: 100%; max-width: 390px; padding: 22px 18px; }
+  .auth-box { width: calc(100% - 32px); max-width: 390px; padding: 28px 22px; }
+  #media-lightbox { padding: 12px; }
+  .lightbox-content { max-width: 100%; }
+  .lightbox-content iframe { width: 94vw; height: calc(var(--app-h, 100dvh) - 120px); }
+  #empty-canvas-state { width: calc(100% - 32px); max-width: 380px; padding: 26px 18px; }
+  #empty-canvas-state .empty-desc { max-width: 100%; }
+  .node { min-width: 150px; max-width: 240px; }
+}
+
+@media (max-width: 600px) {
+  #sidebar { width: 100%; border-left: none; }
+  .sidebar-header { padding: 10px 12px; }
+  .sidebar-content { padding-left: 14px; padding-right: 14px; }
+}
+
+/* Telefon (yotiq) va past balandlikdagi ekranlar */
+@media (max-height: 500px) and (orientation: landscape) {
+  :root { --nav-h: 46px; --crumb-h: 32px; }
+  #navbar .btn-nav { height: 34px; min-height: 34px; }
+  .brand-avatar { width: 32px; height: 32px; }
+  #breadcrumbs-bar { font-size: 12px; }
+  .canvas-dock { flex-direction: row; bottom: calc(10px + var(--safe-b)); align-items: center; }
+  .dock-btn { width: 36px; height: 36px; }
+  .dock-zoom-label { padding: 0 6px; min-width: 38px; }
+  #sidebar { width: min(440px, 60%); }
+  .note-preview-box { max-height: calc(var(--app-h, 100dvh) - 24px); padding: 16px 18px; }
+  .lightbox-header { top: calc(8px + var(--safe-t)); }
+  .lightbox-content, .lightbox-content img, .lightbox-content video { max-height: calc(var(--app-h, 100dvh) - 70px); }
+  .lightbox-content iframe { height: calc(var(--app-h, 100dvh) - 70px); }
+  #empty-canvas-state { padding: 14px 20px; }
+  #empty-canvas-state .empty-icon { font-size: 28px; margin-bottom: 4px; }
+  #empty-canvas-state .empty-desc { margin-bottom: 10px; }
+  .modal-box { max-height: calc(var(--app-h, 100dvh) - 24px); overflow-y: auto; }
+  #toast-box { bottom: calc(10px + var(--safe-b)); }
+  #floating-audio-bar { bottom: calc(10px + var(--safe-b)); right: calc(200px + var(--safe-r)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH OVERLAY (SHOWS ONLY IF USER HAS SET A PASSWORD) -->
+<div id="auth-overlay" style="display: none;">
+  <div class="auth-box">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMzEyZTgxIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNmQyOGQ5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTE2IiBmaWxsPSJ1cmwoI2cpIi8+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgb3BhY2l0eT0iLjcyIiBzdHJva2Utd2lkdGg9IjE4IiBzdHJva2UtbGluZWNhcD0icm91bmQiPgo8cGF0aCBkPSJNMTcwIDI1NiBDMjUwIDI1NiAyNjIgMTUwIDM0NiAxNTAiLz4KPHBhdGggZD0iTTE3MCAyNTYgQzI1MCAyNTYgMjUyIDM2MiAzMTggMzYyIi8+CjwvZz4KPGNpcmNsZSBjeD0iMTI4IiBjeT0iMjU2IiByPSI1MiIgZmlsbD0iI2ZmZmZmZiIvPgo8Y2lyY2xlIGN4PSIxMjgiIGN5PSIyNTYiIHI9IjI0IiBmaWxsPSIjNDMzOGNhIi8+CjxjaXJjbGUgY3g9IjM4NCIgY3k9IjE1MCIgcj0iMzgiIGZpbGw9IiNmZmZmZmYiLz4KPGNpcmNsZSBjeD0iMzg0IiBjeT0iMzYyIiByPSI2MiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJiZjI0IiBzdHJva2Utb3BhY2l0eT0iLjM4IiBzdHJva2Utd2lkdGg9IjEwIi8+CjxjaXJjbGUgY3g9IjM4NCIgY3k9IjM2MiIgcj0iMzgiIGZpbGw9IiNmYmJmMjQiLz4KPC9zdmc+" class="auth-avatar" alt="Logo">
+    <div class="auth-title">Strategy Planner</div>
+    <div class="auth-desc" id="auth-desc">Ma'lumotlar bazasiga kirish uchun parolni kiriting</div>
+    <input type="password" id="auth-pass" class="auth-input" placeholder="Parol...">
+    <button class="auth-btn" id="auth-submit-btn">Kirish</button>
+    <div class="auth-error" id="auth-err"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display: flex;">
+  <!-- TOPBAR -->
+  <header id="navbar">
+    <div class="brand-group" onclick="navToRoot()" title="Bosh sahifa">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMzEyZTgxIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNmQyOGQ5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTE2IiBmaWxsPSJ1cmwoI2cpIi8+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgb3BhY2l0eT0iLjcyIiBzdHJva2Utd2lkdGg9IjE4IiBzdHJva2UtbGluZWNhcD0icm91bmQiPgo8cGF0aCBkPSJNMTcwIDI1NiBDMjUwIDI1NiAyNjIgMTUwIDM0NiAxNTAiLz4KPHBhdGggZD0iTTE3MCAyNTYgQzI1MCAyNTYgMjUyIDM2MiAzMTggMzYyIi8+CjwvZz4KPGNpcmNsZSBjeD0iMTI4IiBjeT0iMjU2IiByPSI1MiIgZmlsbD0iI2ZmZmZmZiIvPgo8Y2lyY2xlIGN4PSIxMjgiIGN5PSIyNTYiIHI9IjI0IiBmaWxsPSIjNDMzOGNhIi8+CjxjaXJjbGUgY3g9IjM4NCIgY3k9IjE1MCIgcj0iMzgiIGZpbGw9IiNmZmZmZmYiLz4KPGNpcmNsZSBjeD0iMzg0IiBjeT0iMzYyIiByPSI2MiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJiZjI0IiBzdHJva2Utb3BhY2l0eT0iLjM4IiBzdHJva2Utd2lkdGg9IjEwIi8+CjxjaXJjbGUgY3g9IjM4NCIgY3k9IjM2MiIgcj0iMzgiIGZpbGw9IiNmYmJmMjQiLz4KPC9zdmc+" class="brand-avatar" alt="Logo">
+      <span>Strategy Planner</span>
+    </div>
+
+    <button class="btn-nav" onclick="autoFormatTreeLayout()" title="Daraxtni avtomatik tartiblash">
+      <span>🌳</span> <span data-i18n="autoLayout">Tartiblash</span>
+    </button>
+    <button class="btn-nav" onclick="addNewRootCategory()" title="Yangi Bo'lim Qo'shish">
+      <span>➕</span> <span data-i18n="addCategory">Yangi Bo'lim</span>
+    </button>
+
+    <div class="nav-spacer"></div>
+
+    <div class="lang-switch">
+      <button class="lang-btn active" id="btn-lang-uz" onclick="changeAppLang('uz')">UZ</button>
+      <button class="lang-btn" id="btn-lang-en" onclick="changeAppLang('en')">EN</button>
+    </div>
+
+    <button class="btn-nav" onclick="openSettingsModal()" title="Sozlamalar va Parol">
+      <span>⚙️</span>
+    </button>
+
+    <button class="btn-nav" onclick="saveToLocalStorage(true)">
+      <span>💾</span> <span data-i18n="save">Saqlash</span>
+    </button>
+    <button class="btn-nav primary" onclick="exportSelfContainedHTML()">
+      <span>📤</span> <span data-i18n="exportFile">Faylni Yuklash (HTML)</span>
+    </button>
+  </header>
+
+  <!-- BREADCRUMBS (FOR NESTED PAGES / SAHIFA ICHIDA SAHIFA) -->
+  <div id="breadcrumbs-bar">
+    <button class="btn-back-crumb" id="btn-back-crumb" onclick="navGoBack()" style="display: none;">
+      <span>⬅</span> <span data-i18n="back">Orqaga</span>
+    </button>
+    <div id="breadcrumbs-list" style="display:flex;align-items:center;gap:6px"><span class="breadcrumb-item current">🏠 Asosiy Xarita</span></div>
+  </div>
+
+  <!-- CANVAS -->
+  <div id="canvas-container" class="">
+    <div id="viewport">
+      <svg id="svg-layer">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#94a3b8"></path>
+          </marker>
+        </defs>
+        <g id="connections-group"></g>
+      </svg>
+      <div id="nodes-layer"></div>
+    </div>
+
+    <!-- EMPTY CANVAS STATE -->
+    <div id="empty-canvas-state" style="display: none;">
+      <div class="empty-icon">🎯</div>
+      <div class="empty-title">Strategy Planner</div>
+      <div class="empty-desc">Xaritangiz toza holatda. Boshlash uchun birinchi bo'limni qo'shing.</div>
+      <button class="btn-nav primary" onclick="addNewRootCategory()" style="padding:10px 22px;font-size:14px;margin:0 auto">
+        <span>➕</span> Birinchi Bo'limni Qo'shish
+      </button>
+    </div>
+  </div>
+
+  <!-- DOCK CONTROLS -->
+  <div class="canvas-dock">
+    <button class="dock-btn" onclick="zoomCanvas(1.2)" title="Kattalashtirish">➕</button>
+    <div class="dock-zoom-label" id="zoom-text">100%</div>
+    <button class="dock-btn" onclick="zoomCanvas(0.8)" title="Kichraytirish">➖</button>
+    <button class="dock-btn" onclick="resetCanvasView()" title="Markazga keltirish">🎯</button>
+  </div>
+
+  <div class="canvas-hint">
+    <span data-i18n="hint">1× Klik: Sahifa/Faylni Ochish | 2× Klik: Tahrirlash | '+' Tugmasi: Shoxcha</span>
+  </div>
+</div>
+
+<!-- FLOATING AUDIO PLAYER -->
+<div id="floating-audio-bar" style="display: none;">
+  <span style="font-size:20px">🎵</span>
+  <div class="audio-bar-info">
+    <span class="audio-bar-title" id="audio-bar-title">Musiqa</span>
+    <audio id="global-audio-player" controls="" style="height:32px"></audio>
+  </div>
+  <button class="audio-bar-close" onclick="closeAudioPlayer()">✕</button>
+</div>
+
+<!-- MEDIA LIGHTBOX -->
+<div id="media-lightbox" style="display: none;">
+  <div class="lightbox-header">
+    <span class="lightbox-title" id="lightbox-title">Media</span>
+    <button class="lightbox-close-btn" onclick="closeLightbox()">✕</button>
+  </div>
+  <div class="lightbox-content" id="lightbox-content"></div>
+</div>
+
+<!-- NOTE PREVIEW MODAL -->
+<div id="note-preview-modal" style="display: none;">
+  <div class="note-preview-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="note-preview-title" id="note-preview-title"></div>
+      <button class="sidebar-close-btn" onclick="closeNotePreview()">✕</button>
+    </div>
+    <div class="note-preview-body" id="note-preview-body"></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:18px">
+      <button class="btn-nav primary" onclick="closeNotePreview();openSidebar();">✏️ Tahrirlash</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR INSPECTOR (2-CLICK EDITING) -->
+<div id="sidebar" class="">
+  <div class="sidebar-header">
+    <button class="sidebar-emoji-btn" id="sb-emoji-btn" onclick="openEmojiPicker(event, 'node')">🎯</button>
+    <input type="text" class="sidebar-title-input" id="sb-title-input" placeholder="Bo'lim nomi...">
+    <button class="sidebar-close-btn" onclick="closeSidebar()">✕</button>
+  </div>
+
+  <div class="sidebar-tabs">
+    <div class="s-tab active" data-tab="content" onclick="switchSidebarTab('content')" data-i18n="tabContent">📋 Ma'lumot</div>
+    <div class="s-tab" data-tab="style" onclick="switchSidebarTab('style')" data-i18n="tabStyle">🎨 Rang &amp; Stil</div>
+    <div class="s-tab" data-tab="meta" onclick="switchSidebarTab('meta')" data-i18n="tabMeta">⚙️ Boshqaruv</div>
+  </div>
+
+  <div class="sidebar-content" id="sb-body"></div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" style="display: none;">
+  <div class="modal-box">
+    <div class="modal-title">⚙️ <span data-i18n="settings">Sozlamalar &amp; Parol</span></div>
+    
+    <div class="form-section">
+      <label class="form-label" data-i18n="changePass">Parol (Ixtiyoriy)</label>
+      <input type="password" id="new-pass-1" class="auth-input" placeholder="Yangi parol (yoki bo'sh qoldiring)...">
+      <input type="password" id="new-pass-2" class="auth-input" placeholder="Parolni tasdiqlang...">
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px">
+        * Parolni olib tashlash uchun ikkala maydonni ham bo'sh qoldirib "Saqlash" tugmasini bosing.
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px">
+      <button class="btn-nav" onclick="closeSettingsModal()" data-i18n="cancel">Bekor qilish</button>
+      <button class="btn-nav primary" onclick="saveNewPassword()" data-i18n="save">Saqlash</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div id="context-menu" style="display: none;">
+  <div class="ctx-item" onclick="ctxOpenPrimary()">🚀 <span data-i18n="ctxOpen">Ochish / Kirish</span></div>
+  <div class="ctx-item" onclick="ctxInspect()">✏️ <span data-i18n="ctxEdit">Tahrirlash</span></div>
+  <div class="ctx-item" onclick="ctxAddChild()">➕ <span data-i18n="ctxAddChild">Farzand qo'shish</span></div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item danger" onclick="ctxDelete()">🗑 <span data-i18n="ctxDelete">O'chirish</span></div>
+</div>
+
+<!-- EMOJI PICKER -->
+<div id="emoji-popup" style="display: none;"></div>
+
+<!-- TOAST -->
+<div id="toast-box">
+  <span id="toast-icon">✓</span>
+  <span id="toast-msg">Barcha ma'lumotlar saqlandi!</span>
+</div>
+
+<script>
+/* ==========================================================================
+   STRATEGY PLANNER - ENGINE
+   ========================================================================== */
+
+const APP_LOGO_DATA_URL = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMzEyZTgxIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNmQyOGQ5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTE2IiBmaWxsPSJ1cmwoI2cpIi8+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgb3BhY2l0eT0iLjcyIiBzdHJva2Utd2lkdGg9IjE4IiBzdHJva2UtbGluZWNhcD0icm91bmQiPgo8cGF0aCBkPSJNMTcwIDI1NiBDMjUwIDI1NiAyNjIgMTUwIDM0NiAxNTAiLz4KPHBhdGggZD0iTTE3MCAyNTYgQzI1MCAyNTYgMjUyIDM2MiAzMTggMzYyIi8+CjwvZz4KPGNpcmNsZSBjeD0iMTI4IiBjeT0iMjU2IiByPSI1MiIgZmlsbD0iI2ZmZmZmZiIvPgo8Y2lyY2xlIGN4PSIxMjgiIGN5PSIyNTYiIHI9IjI0IiBmaWxsPSIjNDMzOGNhIi8+CjxjaXJjbGUgY3g9IjM4NCIgY3k9IjE1MCIgcj0iMzgiIGZpbGw9IiNmZmZmZmYiLz4KPGNpcmNsZSBjeD0iMzg0IiBjeT0iMzYyIiByPSI2MiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJiZjI0IiBzdHJva2Utb3BhY2l0eT0iLjM4IiBzdHJva2Utd2lkdGg9IjEwIi8+CjxjaXJjbGUgY3g9IjM4NCIgY3k9IjM2MiIgcj0iMzgiIGZpbGw9IiNmYmJmMjQiLz4KPC9zdmc+";
+
+const I18N = {
+  uz: {
+    autoLayout: "Tartiblash",
+    addCategory: "Yangi Bo'lim",
+    save: "Saqlash",
+    exportFile: "Faylni Yuklash (HTML)",
+    hint: "1× Klik: Sahifa/Faylni Ochish | 2× Klik: Tahrirlash | '+' Tugmasi: Shoxcha",
+    tabContent: "📋 Ma'lumot",
+    tabStyle: "🎨 Rang & Stil",
+    tabMeta: "⚙️ Boshqaruv",
+    back: "Orqaga",
+    rootTitle: "Asosiy Xarita",
+    ctxOpen: "Ochish / Kirish",
+    ctxEdit: "Tahrirlash",
+    ctxAddChild: "Farzand qo'shish",
+    ctxDelete: "O'chirish",
+    saved: "Barcha ma'lumotlar saqlandi!",
+    exported: "To'liq offline Strategy Planner fayli yuklab olindi!",
+    passSet: "Parol muvaffaqiyatli saqlandi!",
+    passRemoved: "Parol olib tashlandi. Dastur parolsiz ochiladi.",
+    passWrong: "Noto'g'ri parol!",
+    passMismatch: "Parollar bir xil emas!",
+    confirmDelete: "Haqiqatan ham ushbu bo'lim va uning barcha shoxlarini o'chirmoqchimisiz?",
+    newBranchName: "Yangi bo'lim",
+    addText: "Matn",
+    addImage: "Rasm",
+    addVideo: "Video",
+    addAudio: "Musiqa / Audio",
+    addLink: "Havola (URL)",
+    addPdf: "PDF Hujjat",
+    settings: "Sozlamalar & Parol",
+    changePass: "Parol (Ixtiyoriy)",
+    cancel: "Bekor qilish"
+  },
+  en: {
+    autoLayout: "Auto Layout",
+    addCategory: "New Category",
+    save: "Save",
+    exportFile: "Export File (HTML)",
+    hint: "1× Click: Open Page/File | 2× Click: Edit | '+' Button: Branch",
+    tabContent: "📋 Info",
+    tabStyle: "🎨 Style",
+    tabMeta: "⚙️ Manage",
+    back: "Back",
+    rootTitle: "Main Map",
+    ctxOpen: "Open / Enter",
+    ctxEdit: "Edit",
+    ctxAddChild: "Add Child Node",
+    ctxDelete: "Delete",
+    saved: "All changes saved!",
+    exported: "Self-contained Strategy Planner HTML downloaded!",
+    passSet: "Password configured!",
+    passRemoved: "Password removed. App will open without password.",
+    passWrong: "Incorrect password!",
+    passMismatch: "Passwords do not match!",
+    confirmDelete: "Are you sure you want to delete this node and all its sub-branches?",
+    newBranchName: "New Node",
+    addText: "Text",
+    addImage: "Image",
+    addVideo: "Video",
+    addAudio: "Audio",
+    addLink: "Link (URL)",
+    addPdf: "PDF Document",
+    settings: "Settings & Password",
+    changePass: "Password (Optional)",
+    cancel: "Cancel"
+  }
+};
+
+const COLOR_PALETTE = [
+  "#4f46e5", "#7c3aed", "#db2777", "#dc2626",
+  "#ea580c", "#d97706", "#16a34a", "#0891b2",
+  "#2563eb", "#334155"
+];
+
+const EMOJI_LIST = [
+  "🎯", "🚀", "⭐", "📌", "🎬", "📷", "🎥", "💡",
+  "📍", "🎭", "📝", "🎧", "🎙️", "📂", "🔥", "⚡",
+  "💎", "🎨", "💼", "📦", "👤", "👥", "🎪", "🔧"
+];
+
+// Clean App State: No demo clutter!
+let APP_STATE = {
+  lang: "uz",
+  passwordHash: null,
+  view: { x: 0, y: 0, scale: 1 },
+  selectedNodeId: null,
+  nodes: {}
+};
+
+// Navigation stack for Nested Pages / Sahifa ichida sahifa
+let currentPath = [];
+
+let activeSidebarTab = "content";
+let isPanning = false;
+let panStart = { x: 0, y: 0 };
+let draggingNodeId = null;
+let dragStartOffset = { x: 0, y: 0 };
+let dragDistanceMoved = 0;
+let clickTimer = null;
+let contextTargetId = null;
+
+async function computeSHA256(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+// Clean initial data
+function getDefaultData() {
+  return {
+    lang: "uz",
+    passwordHash: null,
+    view: { x: 0, y: 0, scale: 1 },
+    selectedNodeId: null,
+    nodes: {}
+  };
+}
+
+/* ==========================================================================
+   NAVIGATION ENGINE (BREADCRUMBS & NESTED MINDMAPS)
+   ========================================================================== */
+function getCurrentScopeContainer() {
+  let target = APP_STATE.nodes;
+  for (let i = 0; i < currentPath.length; i++) {
+    const pId = currentPath[i];
+    if (target[pId] && target[pId].subMap && target[pId].subMap.nodes) {
+      target = target[pId].subMap.nodes;
+    } else {
+      currentPath = currentPath.slice(0, i);
+      break;
+    }
+  }
+  return target;
+}
+
+function updateBreadcrumbsUI() {
+  syncTgBackButton();
+  const container = document.getElementById("breadcrumbs-list");
+  const backBtn = document.getElementById("btn-back-crumb");
+  container.innerHTML = "";
+
+  if (currentPath.length === 0) {
+    backBtn.style.display = "none";
+    container.innerHTML = `<span class="breadcrumb-item current">🏠 ${I18N[APP_STATE.lang].rootTitle}</span>`;
+    return;
+  }
+
+  backBtn.style.display = "inline-flex";
+
+  let h = `<span class="breadcrumb-item" onclick="navToRoot()">🏠 ${I18N[APP_STATE.lang].rootTitle}</span>`;
+
+  let currentTarget = APP_STATE.nodes;
+  for (let i = 0; i < currentPath.length; i++) {
+    const id = currentPath[i];
+    const node = currentTarget[id];
+    const isLast = (i === currentPath.length - 1);
+    const titleText = (node && node.title) ? node.title : "Bo'lim";
+    const title = `${(node && node.emoji) ? node.emoji : "📄"} ${escapeHTML(titleText)}`;
+
+    h += `<span class="breadcrumb-sep">/</span>`;
+    if (isLast) {
+      h += `<span class="breadcrumb-item current">${title}</span>`;
+    } else {
+      h += `<span class="breadcrumb-item" onclick="navToDepth(${i})">${title}</span>`;
+    }
+
+    if (node && node.subMap && node.subMap.nodes) {
+      currentTarget = node.subMap.nodes;
+    }
+  }
+  container.innerHTML = h;
+}
+
+function navEnterSubMap(nodeId) {
+  const nodes = getCurrentScopeContainer();
+  const node = nodes[nodeId];
+  if (!node) return;
+
+  if (!node.subMap) {
+    node.subMap = {
+      view: { x: 0, y: 0, scale: 1 },
+      nodes: {}
+    };
+  }
+
+  currentPath.push(nodeId);
+  closeSidebar();
+  updateBreadcrumbsUI();
+  renderCanvas();
+  resetCanvasView();
+  saveToLocalStorage(false);
+}
+
+function navGoBack() {
+  if (currentPath.length > 0) {
+    currentPath.pop();
+    closeSidebar();
+    updateBreadcrumbsUI();
+    renderCanvas();
+    resetCanvasView();
+  }
+}
+
+function navToRoot() {
+  currentPath = [];
+  closeSidebar();
+  updateBreadcrumbsUI();
+  renderCanvas();
+  resetCanvasView();
+}
+
+function navToDepth(depthIndex) {
+  currentPath = currentPath.slice(0, depthIndex + 1);
+  closeSidebar();
+  updateBreadcrumbsUI();
+  renderCanvas();
+  resetCanvasView();
+}
+
+/* ==========================================================================
+   INITIALIZATION & OPTIONAL AUTH
+   ========================================================================== */
+function initMindVault() {
+  initTelegram();
+
+  const dataScript = document.getElementById("app-data");
+  let loaded = null;
+  if (dataScript && dataScript.textContent.trim() !== "null") {
+    try { loaded = JSON.parse(dataScript.textContent); } catch(e) { console.error(e); }
+  }
+
+  if (!loaded) {
+    try {
+      const stored = localStorage.getItem("strategy_planner_v1");
+      if (stored) loaded = JSON.parse(stored);
+    } catch(e) { console.error(e); }
+  }
+
+  if (loaded && loaded.nodes) {
+    APP_STATE = loaded;
+    stateLoaded = true;
+    setupAuth();
+    return;
+  }
+
+  // Brauzer xotirasi bo'sh bo'lsa — Telegram Cloud'dagi zaxira nusxadan tiklashga urinamiz
+  cloudLoad().then((cloud) => {
+    APP_STATE = (cloud && cloud.nodes) ? cloud : getDefaultData();
+    stateLoaded = true;
+    if (cloud && cloud.nodes) saveToLocalStorage(false);
+    setupAuth();
+  });
+}
+
+function setupAuth() {
+  const authOverlay = document.getElementById("auth-overlay");
+
+  // OPTIONAL AUTH: If no password is set, launch immediately!
+  if (!APP_STATE.passwordHash) {
+    authOverlay.style.display = "none";
+    launchApp();
+    return;
+  }
+
+  // If password was set, require it
+  authOverlay.style.display = "flex";
+  const passInput = document.getElementById("auth-pass");
+  const submitBtn = document.getElementById("auth-submit-btn");
+  const errBox = document.getElementById("auth-err");
+
+  submitBtn.onclick = async () => {
+    errBox.textContent = "";
+    const p1 = passInput.value.trim();
+    if (!p1) {
+      errBox.textContent = "Parolni kiriting!";
+      return;
+    }
+    const hashed = await computeSHA256(p1);
+    if (hashed === APP_STATE.passwordHash) {
+      authOverlay.style.display = "none";
+      launchApp();
+    } else {
+      errBox.textContent = I18N[APP_STATE.lang].passWrong;
+    }
+  };
+
+  passInput.onkeydown = (e) => { if (e.key === "Enter") submitBtn.click(); };
+}
+
+function launchApp() {
+  document.getElementById("app").style.display = "flex";
+  changeAppLang(APP_STATE.lang || "uz");
+  setupCanvasEvents();
+  updateBreadcrumbsUI();
+  renderCanvas();
+  resetCanvasView();
+}
+
+/* ==========================================================================
+   INTERNATIONALIZATION
+   ========================================================================== */
+function changeAppLang(lang) {
+  APP_STATE.lang = lang;
+  document.getElementById("btn-lang-uz").classList.toggle("active", lang === "uz");
+  document.getElementById("btn-lang-en").classList.toggle("active", lang === "en");
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (I18N[lang] && I18N[lang][key]) {
+      el.textContent = I18N[lang][key];
+    }
+  });
+
+  updateBreadcrumbsUI();
+  if (APP_STATE.selectedNodeId) {
+    renderSidebarContent();
+  }
+}
+
+/* ==========================================================================
+   CANVAS RENDERING (DYNAMIC HEIGHT BEZIER CONNECTIONS)
+   ========================================================================== */
+function renderCanvas() {
+  renderNodes();
+  renderEdges();
+  updateZoomLabel();
+  updateEmptyStateUI();
+}
+
+function updateEmptyStateUI() {
+  const nodes = getCurrentScopeContainer();
+  const count = Object.keys(nodes).length;
+  const emptyBox = document.getElementById("empty-canvas-state");
+  if (emptyBox) {
+    emptyBox.style.display = count === 0 ? "block" : "none";
+  }
+}
+
+function renderEdges() {
+  const g = document.getElementById("connections-group");
+  if (!g) return;
+  g.innerHTML = "";
+
+  const nodes = getCurrentScopeContainer();
+
+  Object.values(nodes).forEach(node => {
+    if (node.parentId && nodes[node.parentId]) {
+      const parent = nodes[node.parentId];
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("class", "edge-path");
+      path.setAttribute("d", getCurvedConnectorPath(parent, node));
+      path.setAttribute("marker-end", "url(#arrow)");
+      g.appendChild(path);
+    }
+  });
+}
+
+// Uses actual card DOM heights so connectors touch bottom and top accurately!
+function getCurvedConnectorPath(p, c) {
+  const pDom = document.getElementById("dom_" + p.id);
+  const cDom = document.getElementById("dom_" + c.id);
+
+  const pHeight = pDom ? pDom.offsetHeight : 50;
+  const cHeight = cDom ? cDom.offsetHeight : 50;
+
+  const startX = p.x;
+  const startY = p.y + (pHeight / 2);
+  const endX = c.x;
+  const endY = c.y - (cHeight / 2);
+
+  const dy = endY - startY;
+  const dx = endX - startX;
+
+  if (dy > 10) {
+    const midY = startY + dy * 0.52;
+    return `M ${startX} ${startY} C ${startX} ${midY}, ${endX} ${midY}, ${endX} ${endY}`;
+  } else {
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const offset = Math.min(dist * 0.45, 120);
+    const angle = Math.atan2(dy, dx);
+    const cx1 = startX + Math.cos(angle) * offset;
+    const cy1 = startY + Math.sin(angle) * offset;
+    const cx2 = endX - Math.cos(angle) * offset;
+    const cy2 = endY - Math.sin(angle) * offset;
+    return `M ${startX} ${startY} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${endX} ${endY}`;
+  }
+}
+
+function renderNodes() {
+  const container = document.getElementById("nodes-layer");
+  if (!container) return;
+  container.innerHTML = "";
+
+  const nodes = getCurrentScopeContainer();
+
+  Object.values(nodes).forEach(node => {
+    const el = document.createElement("div");
+    el.className = `node ${node.parentId === null ? "is-root" : ""} ${node.id === APP_STATE.selectedNodeId ? "selected" : ""}`;
+    el.id = `dom_${node.id}`;
+    el.style.left = `${node.x}px`;
+    el.style.top = `${node.y}px`;
+
+    const imgItem = (node.items || []).find(i => i.type === "image");
+    const linkItem = (node.items || []).find(i => i.type === "link");
+    const audioItem = (node.items || []).find(i => i.type === "audio");
+    const textItem = (node.items || []).find(i => i.type === "text");
+    const childCount = (node.children || []).length;
+    const hasSubPage = !!(node.subMap && node.subMap.nodes && Object.keys(node.subMap.nodes).length > 0);
+
+    el.innerHTML = `
+      <div class="node-header-line" style="background: ${node.color || "#4f46e5"}"></div>
+      <div class="node-inner">
+        <div class="node-top-row">
+          <div class="node-icon-title">
+            <span class="node-emoji">${node.emoji || "📌"}</span>
+            <span class="node-title">${escapeHTML(node.title || "Nomsiz")}</span>
+          </div>
+          <div class="node-badges">
+            ${childCount > 0 ? `<span class="badge-pill">🌿 ${childCount}</span>` : ""}
+            ${hasSubPage ? `<span class="badge-pill subpage" title="Ichki Sahifa">📂</span>` : ""}
+            ${linkItem ? `<span class="badge-pill link" title="${escapeHTML(linkItem.url || "")}">🔗</span>` : ""}
+            ${audioItem ? `<span class="badge-pill audio" title="Audio">🎵</span>` : ""}
+            ${(node.items || []).length > 0 && !linkItem && !audioItem ? `<span class="badge-pill media">📁 ${(node.items || []).length}</span>` : ""}
+          </div>
+        </div>
+        ${imgItem && imgItem.data ? `<img src="${imgItem.data}" class="node-card-image" alt="node-img">` : ""}
+        ${textItem && textItem.text ? `<div class="node-card-desc">${escapeHTML(textItem.text)}</div>` : ""}
+      </div>
+      <button class="node-add-btn" title="Yangi shoxcha qo'shish" onclick="onNodeAddChildClick('${node.id}', event)">+</button>
+    `;
+
+    el.onmousedown = (e) => onNodeMouseDown(node.id, e);
+    el.oncontextmenu = (e) => onNodeContextMenu(node.id, e);
+
+    container.appendChild(el);
+  });
+}
+
+/* ==========================================================================
+   NODE INTERACTIONS (1-CLICK OPEN MATERIAL/SUBPAGE, 2-CLICK EDIT)
+   ========================================================================== */
+function onNodeMouseDown(nodeId, e) {
+  if (e.button !== 0 || e.target.classList.contains("node-add-btn")) return;
+  e.stopPropagation();
+
+  draggingNodeId = nodeId;
+  dragDistanceMoved = 0;
+  const nodes = getCurrentScopeContainer();
+  const node = nodes[nodeId];
+  if (!node) return;
+  const worldPos = screenToWorld(e.clientX, e.clientY);
+  dragStartOffset = { x: worldPos.x - node.x, y: worldPos.y - node.y };
+}
+
+function onNodeClick(nodeId) {
+  if (dragDistanceMoved > 10) return;
+
+  if (clickTimer) {
+    clearTimeout(clickTimer);
+    clickTimer = null;
+    // 2× Click -> Open Edit Sidebar!
+    selectNode(nodeId);
+    openSidebar();
+  } else {
+    clickTimer = setTimeout(() => {
+      clickTimer = null;
+      // 1× Click -> Open Sub-Page or Attached Material!
+      selectNode(nodeId);
+      executeNodePrimaryAction(nodeId);
+    }, 240);
+  }
+}
+
+function selectNode(nodeId) {
+  APP_STATE.selectedNodeId = nodeId;
+  document.querySelectorAll(".node").forEach(n => n.classList.remove("selected"));
+  const domNode = document.getElementById(`dom_${nodeId}`);
+  if (domNode) domNode.classList.add("selected");
+}
+
+function executeNodePrimaryAction(nodeId) {
+  const nodes = getCurrentScopeContainer();
+  const node = nodes[nodeId];
+  if (!node) return;
+
+  // 1. Sub-Page
+  if (node.subMap && node.subMap.nodes && Object.keys(node.subMap.nodes).length > 0) {
+    navEnterSubMap(nodeId);
+    return;
+  }
+
+  const items = node.items || [];
+  const linkItem = items.find(i => i.type === "link");
+  const audioItem = items.find(i => i.type === "audio");
+  const videoItem = items.find(i => i.type === "video");
+  const imageItem = items.find(i => i.type === "image");
+  const pdfItem = items.find(i => i.type === "pdf");
+  const textItem = items.find(i => i.type === "text");
+
+  // 2. Link
+  if (linkItem && linkItem.url) {
+    window.open(linkItem.url, "_blank");
+    showToast(`🔗 Havola ochilmoqda: ${linkItem.label || linkItem.url}`);
+    return;
+  }
+
+  // 3. Audio
+  if (audioItem && audioItem.data) {
+    playAudioItem(node.title, audioItem.data);
+    return;
+  }
+
+  // 4. Video
+  if (videoItem && videoItem.data) {
+    openLightbox("video", videoItem.data, node.title);
+    return;
+  }
+
+  // 5. Image
+  if (imageItem && imageItem.data) {
+    openLightbox("image", imageItem.data, node.title);
+    return;
+  }
+
+  // 6. PDF
+  if (pdfItem && pdfItem.data) {
+    openLightbox("pdf", pdfItem.data, node.title);
+    return;
+  }
+
+  // 7. Text
+  if (textItem && textItem.text) {
+    openNotePreview(node);
+    return;
+  }
+
+  showToast("Ushbu bo'limga ma'lumot biriktirish uchun 2 marta bosing.");
+}
+
+/* ==========================================================================
+   MEDIA PLAYERS & VIEWERS
+   ========================================================================== */
+function playAudioItem(title, audioSrc) {
+  const bar = document.getElementById("floating-audio-bar");
+  const titleEl = document.getElementById("audio-bar-title");
+  const player = document.getElementById("global-audio-player");
+
+  titleEl.textContent = title || "Musiqa";
+  player.src = audioSrc;
+  bar.style.display = "flex";
+  player.play();
+  showToast(`🎵 ${title || "Audio"} ijro etilmoqda`);
+}
+
+function closeAudioPlayer() {
+  const player = document.getElementById("global-audio-player");
+  player.pause();
+  document.getElementById("floating-audio-bar").style.display = "none";
+}
+
+function openLightbox(type, dataSrc, title) {
+  const box = document.getElementById("media-lightbox");
+  const titleEl = document.getElementById("lightbox-title");
+  const content = document.getElementById("lightbox-content");
+
+  titleEl.textContent = title || "Media";
+  if (type === "image") {
+    content.innerHTML = `<img src="${dataSrc}" alt="image">`;
+  } else if (type === "video") {
+    content.innerHTML = `<video src="${dataSrc}" controls autoplay></video>`;
+  } else if (type === "pdf") {
+    content.innerHTML = `<iframe src="${dataSrc}"></iframe>`;
+  }
+  box.style.display = "flex";
+}
+
+function closeLightbox() {
+  const box = document.getElementById("media-lightbox");
+  const video = box.querySelector("video");
+  if (video) video.pause();
+  box.style.display = "none";
+  document.getElementById("lightbox-content").innerHTML = "";
+}
+
+function openNotePreview(node) {
+  document.getElementById("note-preview-title").innerHTML = `${node.emoji || "📝"} ${escapeHTML(node.title || "")}`;
+  const allTexts = (node.items || []).filter(i => i.type === "text").map(i => i.text || "").filter(Boolean);
+  document.getElementById("note-preview-body").textContent = allTexts.join("\n\n");
+  document.getElementById("note-preview-modal").style.display = "flex";
+}
+
+function closeNotePreview() {
+  document.getElementById("note-preview-modal").style.display = "none";
+}
+
+/* ==========================================================================
+   NODE CREATION & MANAGEMENT
+   ========================================================================== */
+function onNodeAddChildClick(parentId, e) {
+  e.stopPropagation();
+  addChildNode(parentId);
+}
+
+function addChildNode(parentId) {
+  const nodes = getCurrentScopeContainer();
+  const parent = nodes[parentId];
+  if (!parent) return;
+
+  const newId = `node_${Date.now()}`;
+  const count = (parent.children || []).length;
+  
+  const spacing = 180;
+  const offset = (count - 1) * (spacing / 2);
+  const newX = Math.round(parent.x + (count * spacing) - offset);
+  const newY = Math.round(parent.y + 190);
+
+  const newNode = {
+    id: newId,
+    title: I18N[APP_STATE.lang].newBranchName,
+    emoji: "📌",
+    color: parent.color || "#4f46e5",
+    x: newX,
+    y: newY,
+    parentId: parentId,
+    children: [],
+    items: [],
+    subMap: null
+  };
+
+  if (!parent.children) parent.children = [];
+  parent.children.push(newId);
+  nodes[newId] = newNode;
+
+  renderCanvas();
+  selectNode(newId);
+  openSidebar();
+  saveToLocalStorage(false);
+}
+
+function addNewRootCategory() {
+  const nodes = getCurrentScopeContainer();
+  const newId = `node_${Date.now()}`;
+  const count = Object.keys(nodes).length;
+  
+  const newNode = {
+    id: newId,
+    title: "Yangi Bo'lim",
+    emoji: "🎯",
+    color: COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)],
+    x: count === 0 ? 0 : Math.round((Math.random() - 0.5) * 300),
+    y: count === 0 ? 0 : -140,
+    parentId: null,
+    children: [],
+    items: [],
+    subMap: null
+  };
+  nodes[newId] = newNode;
+  renderCanvas();
+  selectNode(newId);
+  openSidebar();
+  saveToLocalStorage(false);
+}
+
+/* ==========================================================================
+   CANVAS PAN & ZOOM
+   ========================================================================== */
+function setupCanvasEvents() {
+  const container = document.getElementById("canvas-container");
+
+  container.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const factor = e.deltaY < 0 ? 1.12 : 0.9;
+    const rect = container.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const newScale = Math.max(0.15, Math.min(3.5, APP_STATE.view.scale * factor));
+    const ratio = newScale / APP_STATE.view.scale;
+
+    APP_STATE.view.x = mouseX - (mouseX - APP_STATE.view.x) * ratio;
+    APP_STATE.view.y = mouseY - (mouseY - APP_STATE.view.y) * ratio;
+    APP_STATE.view.scale = newScale;
+
+    updateTransform();
+  }, { passive: false });
+
+  container.addEventListener("mousedown", (e) => {
+    if (e.target === container || e.target.id === "viewport" || e.target.id === "svg-layer" || e.target.tagName === "path") {
+      isPanning = true;
+      panStart = { x: e.clientX - APP_STATE.view.x, y: e.clientY - APP_STATE.view.y };
+      container.classList.add("panning");
+      closeContextMenu();
+    }
+  });
+
+  window.addEventListener("mousemove", (e) => {
+    if (isPanning) {
+      APP_STATE.view.x = e.clientX - panStart.x;
+      APP_STATE.view.y = e.clientY - panStart.y;
+      updateTransform();
+    } else if (draggingNodeId) {
+      dragDistanceMoved += Math.hypot(e.movementX, e.movementY);
+      const nodes = getCurrentScopeContainer();
+      const node = nodes[draggingNodeId];
+      if (!node) return;
+      const worldPos = screenToWorld(e.clientX, e.clientY);
+      node.x = Math.round(worldPos.x - dragStartOffset.x);
+      node.y = Math.round(worldPos.y - dragStartOffset.y);
+
+      const dom = document.getElementById(`dom_${node.id}`);
+      if (dom) {
+        dom.style.left = `${node.x}px`;
+        dom.style.top = `${node.y}px`;
+      }
+      renderEdges();
+    }
+  });
+
+  window.addEventListener("mouseup", (e) => {
+    if (isPanning) {
+      isPanning = false;
+      container.classList.remove("panning");
+    }
+    if (draggingNodeId) {
+      const id = draggingNodeId;
+      draggingNodeId = null;
+      if (dragDistanceMoved <= 6) {
+        onNodeClick(id);
+      } else {
+        saveToLocalStorage(false);
+      }
+    }
+  });
+
+  /* ---- SENSORLI BOSHQARUV: 1 barmoq = surish / tugunni ko'chirish, 2 barmoq = kattalashtirish ---- */
+  let touchMode = null;   // "pan" | "node" | "pinch"
+  let touchStart = null;
+  let pinch = null;
+  const TAP_SLOP = 10;
+
+  const touchDist = (a, b) => Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+
+  container.addEventListener("touchstart", (e) => {
+    closeContextMenu();
+    const ep = document.getElementById("emoji-popup");
+    if (ep) ep.style.display = "none";
+
+    if (e.touches.length >= 2) {
+      const rect = container.getBoundingClientRect();
+      const t1 = e.touches[0], t2 = e.touches[1];
+      const mx = (t1.clientX + t2.clientX) / 2 - rect.left;
+      const my = (t1.clientY + t2.clientY) / 2 - rect.top;
+      pinch = {
+        dist: touchDist(t1, t2) || 1,
+        scale: APP_STATE.view.scale,
+        wx: (mx - APP_STATE.view.x) / APP_STATE.view.scale,
+        wy: (my - APP_STATE.view.y) / APP_STATE.view.scale
+      };
+      touchMode = "pinch";
+      draggingNodeId = null;
+      isPanning = false;
+      if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+      return;
+    }
+
+    // tugmalar / havolalar / maydonlar o'z holicha ishlasin
+    if (e.target.closest("button, a, input, textarea, select")) { touchMode = null; return; }
+
+    const t = e.touches[0];
+    touchStart = { x: t.clientX, y: t.clientY };
+    dragDistanceMoved = 0;
+
+    const nodeEl = e.target.closest(".node");
+    if (nodeEl) {
+      const nodeId = nodeEl.id.replace("dom_", "");
+      const node = getCurrentScopeContainer()[nodeId];
+      if (!node) { touchMode = null; return; }
+      touchMode = "node";
+      draggingNodeId = nodeId;
+      const w = screenToWorld(t.clientX, t.clientY);
+      dragStartOffset = { x: w.x - node.x, y: w.y - node.y };
+    } else {
+      touchMode = "pan";
+      isPanning = true;
+      panStart = { x: t.clientX - APP_STATE.view.x, y: t.clientY - APP_STATE.view.y };
+    }
+  }, { passive: true });
+
+  window.addEventListener("touchmove", (e) => {
+    if (touchMode === "pinch" && pinch && e.touches.length >= 2) {
+      const rect = container.getBoundingClientRect();
+      const t1 = e.touches[0], t2 = e.touches[1];
+      const mx = (t1.clientX + t2.clientX) / 2 - rect.left;
+      const my = (t1.clientY + t2.clientY) / 2 - rect.top;
+      const newScale = Math.max(0.15, Math.min(3.5, pinch.scale * (touchDist(t1, t2) / pinch.dist)));
+      APP_STATE.view.scale = newScale;
+      APP_STATE.view.x = mx - pinch.wx * newScale;
+      APP_STATE.view.y = my - pinch.wy * newScale;
+      updateTransform();
+      return;
+    }
+    if (e.touches.length !== 1 || !touchStart) return;
+    const t = e.touches[0];
+
+    if (touchMode === "pan" && isPanning) {
+      APP_STATE.view.x = t.clientX - panStart.x;
+      APP_STATE.view.y = t.clientY - panStart.y;
+      updateTransform();
+    } else if (touchMode === "node" && draggingNodeId) {
+      dragDistanceMoved = Math.max(dragDistanceMoved, Math.hypot(t.clientX - touchStart.x, t.clientY - touchStart.y));
+      if (dragDistanceMoved <= TAP_SLOP) return;
+      const node = getCurrentScopeContainer()[draggingNodeId];
+      if (!node) return;
+      const w = screenToWorld(t.clientX, t.clientY);
+      node.x = Math.round(w.x - dragStartOffset.x);
+      node.y = Math.round(w.y - dragStartOffset.y);
+      const dom = document.getElementById(`dom_${node.id}`);
+      if (dom) {
+        dom.style.left = `${node.x}px`;
+        dom.style.top = `${node.y}px`;
+      }
+      renderEdges();
+    }
+  }, { passive: true });
+
+  const resetTouch = () => {
+    touchMode = null; touchStart = null; pinch = null;
+    isPanning = false; draggingNodeId = null;
+  };
+
+  window.addEventListener("touchend", (e) => {
+    if (touchMode === "pinch") {
+      if (e.touches.length < 2) { resetTouch(); saveToLocalStorage(false); }
+      return;
+    }
+    if (!touchMode) return;
+    const mode = touchMode;
+    const id = draggingNodeId;
+    const moved = dragDistanceMoved;
+    resetTouch();
+    if (mode === "node" && id) {
+      if (moved <= TAP_SLOP) onNodeClick(id);
+      else saveToLocalStorage(false);
+    }
+    // brauzer yaratadigan "ko'rinmas sichqoncha bosishi" ni to'xtatamiz (ikki marta ishlab ketmasligi uchun)
+    if (e.cancelable) e.preventDefault();
+  }, { passive: false });
+
+  window.addEventListener("touchcancel", () => {
+    if (touchMode === "node") saveToLocalStorage(false);
+    resetTouch();
+  }, { passive: true });
+}
+
+function screenToWorld(sx, sy) {
+  const container = document.getElementById("canvas-container");
+  const rect = container.getBoundingClientRect();
+  const px = sx - rect.left;
+  const py = sy - rect.top;
+  return {
+    x: (px - APP_STATE.view.x) / APP_STATE.view.scale,
+    y: (py - APP_STATE.view.y) / APP_STATE.view.scale
+  };
+}
+
+function updateTransform() {
+  const vp = document.getElementById("viewport");
+  if (!vp) return;
+  vp.style.transform = `translate(${APP_STATE.view.x}px, ${APP_STATE.view.y}px) scale(${APP_STATE.view.scale})`;
+  updateZoomLabel();
+}
+
+function zoomCanvas(factor) {
+  const container = document.getElementById("canvas-container");
+  const cx = container.clientWidth / 2;
+  const cy = container.clientHeight / 2;
+  const newScale = Math.max(0.15, Math.min(3.5, APP_STATE.view.scale * factor));
+  const ratio = newScale / APP_STATE.view.scale;
+
+  APP_STATE.view.x = cx - (cx - APP_STATE.view.x) * ratio;
+  APP_STATE.view.y = cy - (cy - APP_STATE.view.y) * ratio;
+  APP_STATE.view.scale = newScale;
+  updateTransform();
+}
+
+function resetCanvasView() {
+  const container = document.getElementById("canvas-container");
+  const nodes = Object.values(getCurrentScopeContainer());
+  if (!nodes.length) {
+    APP_STATE.view = { x: container.clientWidth / 2, y: container.clientHeight / 2, scale: 1 };
+    updateTransform();
+    return;
+  }
+
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  nodes.forEach(n => {
+    minX = Math.min(minX, n.x - 140);
+    maxX = Math.max(maxX, n.x + 140);
+    minY = Math.min(minY, n.y - 70);
+    maxY = Math.max(maxY, n.y + 70);
+  });
+
+  const width = maxX - minX;
+  const height = maxY - minY;
+  const cw = container.clientWidth;
+  const ch = container.clientHeight;
+
+  let scale = Math.min(cw / (width + 150), ch / (height + 150), 1.15);
+  scale = Math.max(0.4, scale);
+
+  APP_STATE.view.scale = scale;
+  APP_STATE.view.x = cw / 2 - ((minX + maxX) / 2) * scale;
+  APP_STATE.view.y = ch / 2 - ((minY + maxY) / 2) * scale;
+
+  updateTransform();
+}
+
+function updateZoomLabel() {
+  const el = document.getElementById("zoom-text");
+  if (el) el.textContent = `${Math.round(APP_STATE.view.scale * 100)}%`;
+}
+
+/* ==========================================================================
+   AUTO TREE LAYOUT
+   ========================================================================== */
+function autoFormatTreeLayout() {
+  const nodes = getCurrentScopeContainer();
+  const roots = Object.values(nodes).filter(n => !n.parentId);
+  if (!roots.length) return;
+
+  let currentX = -(roots.length - 1) * 350;
+  roots.forEach(root => {
+    root.y = -140;
+    root.x = currentX;
+    layoutSubtreeHierarchy(root.id);
+    currentX += 700;
+  });
+
+  renderCanvas();
+  resetCanvasView();
+  saveToLocalStorage(true);
+}
+
+function layoutSubtreeHierarchy(nodeId) {
+  const nodes = getCurrentScopeContainer();
+  const node = nodes[nodeId];
+  if (!node || !node.children || !node.children.length) return;
+
+  const count = node.children.length;
+  const widthPerChild = 190;
+  const totalWidth = (count - 1) * widthPerChild;
+  const startX = node.x - (totalWidth / 2);
+
+  node.children.forEach((childId, i) => {
+    const child = nodes[childId];
+    if (!child) return;
+
+    child.x = Math.round(startX + (i * widthPerChild));
+    child.y = Math.round(node.y + 190);
+
+    layoutSubtreeHierarchy(childId);
+  });
+}
+
+/* ==========================================================================
+   SIDEBAR INSPECTOR (2-CLICK EDITING)
+   ========================================================================== */
+function openSidebar() {
+  renderSidebarContent();
+  document.getElementById("sidebar").classList.add("open");
+  syncTgBackButton();
+}
+
+function closeSidebar() {
+  document.getElementById("sidebar").classList.remove("open");
+  saveToLocalStorage(false);
+  syncTgBackButton();
+}
+
+function switchSidebarTab(tab) {
+  activeSidebarTab = tab;
+  document.querySelectorAll(".s-tab").forEach(el => {
+    el.classList.toggle("active", el.getAttribute("data-tab") === tab);
+  });
+  renderSidebarContent();
+}
+
+function renderSidebarContent() {
+  const nodes = getCurrentScopeContainer();
+  const node = nodes[APP_STATE.selectedNodeId];
+  if (!node) return;
+
+  document.getElementById("sb-emoji-btn").textContent = node.emoji || "📌";
+  const titleInp = document.getElementById("sb-title-input");
+  titleInp.value = node.title || "";
+  titleInp.oninput = (e) => {
+    node.title = e.target.value;
+    updateNodeDOMTitle(node.id, node.title);
+    renderEdges();
+    scheduleAutoSave();
+  };
+
+  const body = document.getElementById("sb-body");
+  body.innerHTML = "";
+
+  if (activeSidebarTab === "content") {
+    renderSidebarContentTab(body, node);
+  } else if (activeSidebarTab === "style") {
+    renderSidebarStyleTab(body, node);
+  } else if (activeSidebarTab === "meta") {
+    renderSidebarMetaTab(body, node);
+  }
+}
+
+function updateNodeDOMTitle(nodeId, newTitle) {
+  const titleSpan = document.querySelector(`#dom_${nodeId} .node-title`);
+  if (titleSpan) titleSpan.textContent = newTitle || "Nomsiz";
+}
+
+function renderSidebarContentTab(container, node) {
+  if (!node.items) node.items = [];
+
+  const hasSubMap = !!(node.subMap && node.subMap.nodes && Object.keys(node.subMap.nodes).length > 0);
+
+  let subMapSection = `
+    <div class="subpage-toggle-card">
+      <div class="subpage-toggle-head">
+        <span class="subpage-toggle-title">📂 Ichki Sahifa (Sub-MindMap)</span>
+        ${hasSubMap ? `<span class="badge-pill subpage">Faol</span>` : ""}
+      </div>
+      <div style="font-size:12px;color:#713f12;margin-bottom:10px;line-height:1.4">
+        Ushbu bo'limning ichida alohida shoxlangan yangi xarita ochishingiz mumkin.
+      </div>
+      <button class="btn-nav primary" style="width:100%" onclick="navEnterSubMap('${node.id}')">
+        <span>🚀</span> ${hasSubMap ? "Ichki Sahifaga Kirish" : "Ichki Sahifa Yaratish va Kirish"}
+      </button>
+    </div>
+  `;
+
+  let itemsHtml = "";
+  node.items.forEach((item, index) => {
+    let contentHtml = "";
+
+    if (item.type === "text") {
+      contentHtml = `
+        <textarea class="rich-textarea" placeholder="Tavsif yoki matn..." oninput="updateItemData(${index}, 'text', this.value)">${escapeHTML(item.text || "")}</textarea>
+      `;
+    } else if (item.type === "image") {
+      contentHtml = `
+        <div class="media-preview-box">
+          ${item.data ? `<img src="${item.data}">` : `<div style="color:white;font-size:12px">Rasm yuklanmagan</div>`}
+        </div>
+        <div class="upload-dropzone" style="margin-top:6px" onclick="triggerFileUpload(${index}, 'image/*')">
+          <div style="font-size:18px">🔄</div>
+          <div style="font-size:11.5px;color:var(--text-muted)">Rasmni almashtirish</div>
+        </div>
+      `;
+    } else if (item.type === "video") {
+      contentHtml = `
+        <div class="media-preview-box">
+          ${item.data ? `<video src="${item.data}" controls></video>` : `<div style="color:white;font-size:12px">Video yuklanmagan</div>`}
+        </div>
+        <div class="upload-dropzone" style="margin-top:6px" onclick="triggerFileUpload(${index}, 'video/*')">
+          <div style="font-size:18px">🎬</div>
+          <div style="font-size:11.5px;color:var(--text-muted)">Videoni almashtirish</div>
+        </div>
+      `;
+    } else if (item.type === "audio") {
+      contentHtml = `
+        <div class="media-preview-box" style="background:#f8fafc;height:auto">
+          ${item.data ? `<audio src="${item.data}" controls></audio>` : `<div>Audio yuklanmagan</div>`}
+        </div>
+        <div class="upload-dropzone" style="margin-top:6px" onclick="triggerFileUpload(${index}, 'audio/*')">
+          <div style="font-size:18px">🎵</div>
+          <div style="font-size:11.5px;color:var(--text-muted)">Audioni almashtirish</div>
+        </div>
+      `;
+    } else if (item.type === "link") {
+      contentHtml = `
+        <input type="text" class="rich-textarea" style="min-height:auto;margin-bottom:6px" placeholder="Havola nomi" value="${escapeHTML(item.label || "")}" oninput="updateItemData(${index}, 'label', this.value)">
+        <input type="url" class="rich-textarea" style="min-height:auto" placeholder="https://..." value="${escapeHTML(item.url || "")}" oninput="updateItemData(${index}, 'url', this.value)">
+        ${item.url ? `<a href="${item.url}" target="_blank" style="display:inline-block;margin-top:8px;font-size:12.5px;color:var(--accent);font-weight:700">🔗 Havolani ochish ↗</a>` : ""}
+      `;
+    } else if (item.type === "pdf") {
+      contentHtml = `
+        ${item.data ? `<iframe src="${item.data}" style="width:100%;height:180px;border-radius:6px;border:1px solid var(--border)"></iframe>` : ""}
+        <div class="upload-dropzone" style="margin-top:6px" onclick="triggerFileUpload(${index}, 'application/pdf')">
+          <div style="font-size:18px">📄</div>
+          <div style="font-size:11.5px;color:var(--text-muted)">PDF yuklash</div>
+        </div>
+      `;
+    }
+
+    itemsHtml += `
+      <div class="content-item-card">
+        <div class="content-item-head">
+          <span class="content-item-tag">${itemIcon(item.type)} ${item.type.toUpperCase()}</span>
+          <button class="content-item-del" onclick="deleteContentItem(${index})" title="O'chirish">✕</button>
+        </div>
+        ${contentHtml}
+      </div>
+    `;
+  });
+
+  container.innerHTML = `
+    ${subMapSection}
+
+    <div class="form-section">
+      <span class="form-label">Biriktirilgan Ma'lumotlar</span>
+      ${itemsHtml}
+    </div>
+
+    <div class="form-section">
+      <span class="form-label">Yangi Ma'lumot Biriktirish</span>
+      <div class="add-block-grid">
+        <button class="btn-add-block" onclick="addNewContentItem('text')"><span>📝</span>${I18N[APP_STATE.lang].addText}</button>
+        <button class="btn-add-block" onclick="addNewContentItem('image')"><span>🖼️</span>${I18N[APP_STATE.lang].addImage}</button>
+        <button class="btn-add-block" onclick="addNewContentItem('video')"><span>🎬</span>${I18N[APP_STATE.lang].addVideo}</button>
+        <button class="btn-add-block" onclick="addNewContentItem('audio')"><span>🎵</span>${I18N[APP_STATE.lang].addAudio}</button>
+        <button class="btn-add-block" onclick="addNewContentItem('link')"><span>🔗</span>${I18N[APP_STATE.lang].addLink}</button>
+        <button class="btn-add-block" onclick="addNewContentItem('pdf')"><span>📄</span>${I18N[APP_STATE.lang].addPdf}</button>
+      </div>
+    </div>
+  `;
+}
+
+function itemIcon(type) {
+  const map = { text: "📝", image: "🖼️", video: "🎬", audio: "🎵", link: "🔗", pdf: "📄" };
+  return map[type] || "📁";
+}
+
+function addNewContentItem(type) {
+  const nodes = getCurrentScopeContainer();
+  const node = nodes[APP_STATE.selectedNodeId];
+  if (!node) return;
+  if (!node.items) node.items = [];
+
+  if (type === "text") {
+    node.items.push({ type: "text", text: "" });
+    renderSidebarContent();
+    renderCanvas();
+  } else if (type === "link") {
+    node.items.push({ type: "link", label: "Havola", url: "https://" });
+    renderSidebarContent();
+    renderCanvas();
+  } else {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    if (type === "image") fileInput.accept = "image/*";
+    if (type === "video") fileInput.accept = "video/*";
+    if (type === "audio") fileInput.accept = "audio/*";
+    if (type === "pdf") fileInput.accept = "application/pdf";
+
+    fileInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (re) => {
+        node.items.push({ type: type, data: re.target.result });
+        renderSidebarContent();
+        renderCanvas();
+        saveToLocalStorage(false);
+      };
+      reader.readAsDataURL(file);
+    };
+    fileInput.click();
+  }
+}
+
+function updateItemData(index, field, value) {
+  const nodes = getCurrentScopeContainer();
+  const node = nodes[APP_STATE.selectedNodeId];
+  if (!node || !node.items || !node.items[index]) return;
+  node.items[index][field] = value;
+  scheduleAutoSave();
+  if (field === "text") {
+    const textPreview = document.querySelector(`#dom_${node.id} .node-card-desc`);
+    if (textPreview) textPreview.textContent = value;
+  }
+}
+
+function deleteContentItem(index) {
+  const nodes = getCurrentScopeContainer();
+  const node = nodes[APP_STATE.selectedNodeId];
+  if (!node || !node.items) return;
+  node.items.splice(index, 1);
+  renderSidebarContent();
+  renderCanvas();
+  saveToLocalStorage(false);
+}
+
+function triggerFileUpload(index, acceptType) {
+  const nodes = getCurrentScopeContainer();
+  const node = nodes[APP_STATE.selectedNodeId];
+  if (!node || !node.items || !node.items[index]) return;
+
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = acceptType;
+  fileInput.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (re) => {
+      node.items[index].data = re.target.result;
+      renderSidebarContent();
+      renderCanvas();
+      saveToLocalStorage(false);
+    };
+    reader.readAsDataURL(file);
+  };
+  fileInput.click();
+}
+
+function renderSidebarStyleTab(container, node) {
+  const colorDots = COLOR_PALETTE.map(c => `
+    <div class="color-dot ${node.color === c ? "active" : ""}" style="background:${c}" onclick="setNodeColor('${c}')"></div>
+  `).join("");
+
+  container.innerHTML = `
+    <div class="form-section">
+      <span class="form-label">Tugun Rangi</span>
+      <div class="color-picker-row">
+        ${colorDots}
+      </div>
+    </div>
+    <div class="form-section">
+      <span class="form-label">Ikonka (Emoji)</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${EMOJI_LIST.map(em => `<button class="ep-btn" onclick="setNodeEmoji('${em}')">${em}</button>`).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function setNodeColor(color) {
+  const nodes = getCurrentScopeContainer();
+  const node = nodes[APP_STATE.selectedNodeId];
+  if (!node) return;
+  node.color = color;
+  const headerBar = document.querySelector(`#dom_${node.id} .node-header-line`);
+  if (headerBar) headerBar.style.background = color;
+  renderSidebarStyleTab(document.getElementById("sb-body"), node);
+  saveToLocalStorage(false);
+}
+
+function setNodeEmoji(emoji) {
+  const nodes = getCurrentScopeContainer();
+  const node = nodes[APP_STATE.selectedNodeId];
+  if (!node) return;
+  node.emoji = emoji;
+  document.getElementById("sb-emoji-btn").textContent = emoji;
+  const domEmoji = document.querySelector(`#dom_${node.id} .node-emoji`);
+  if (domEmoji) domEmoji.textContent = emoji;
+  saveToLocalStorage(false);
+}
+
+function renderSidebarMetaTab(container, node) {
+  const hasSubMap = !!(node.subMap && node.subMap.nodes);
+  container.innerHTML = `
+    <div class="form-section">
+      <span class="form-label">Bo'lim ma'lumotlari</span>
+      <div style="font-size:13px;line-height:1.8;color:var(--text-muted)">
+        <div><b>ID:</b> ${node.id}</div>
+        <div><b>Bog'langan shoxlar:</b> ${(node.children || []).length} ta</div>
+        <div><b>Ichki sahifa (sub-map):</b> ${hasSubMap ? "Mavjud" : "Yo'q"}</div>
+        <div><b>Media va biriktirmalar:</b> ${(node.items || []).length} ta</div>
+      </div>
+    </div>
+    <div class="form-section" style="margin-top:24px">
+      <button class="btn-nav" style="width:100%;color:var(--danger);border-color:var(--danger)" onclick="deleteNodeWithConfirmation('${node.id}')">
+        🗑 Ushbu Bo'limni O'chirish
+      </button>
+    </div>
+  `;
+}
+
+function deleteNodeWithConfirmation(nodeId) {
+  if (confirm(I18N[APP_STATE.lang].confirmDelete)) {
+    deleteNodeRecursive(nodeId);
+    closeSidebar();
+    renderCanvas();
+    saveToLocalStorage(true);
+  }
+}
+
+function deleteNodeRecursive(nodeId) {
+  const nodes = getCurrentScopeContainer();
+  const node = nodes[nodeId];
+  if (!node) return;
+
+  if (node.children) {
+    [...node.children].forEach(childId => deleteNodeRecursive(childId));
+  }
+
+  if (node.parentId && nodes[node.parentId]) {
+    const p = nodes[node.parentId];
+    p.children = p.children.filter(id => id !== nodeId);
+  }
+
+  delete nodes[nodeId];
+}
+
+/* ==========================================================================
+   SETTINGS & OPTIONAL PASSWORD
+   ========================================================================== */
+function openSettingsModal() {
+  document.getElementById("settings-modal").style.display = "flex";
+  document.getElementById("new-pass-1").value = "";
+  document.getElementById("new-pass-2").value = "";
+}
+
+function closeSettingsModal() {
+  document.getElementById("settings-modal").style.display = "none";
+}
+
+async function saveNewPassword() {
+  const p1 = document.getElementById("new-pass-1").value.trim();
+  const p2 = document.getElementById("new-pass-2").value.trim();
+
+  // If left empty, remove password (parolsiz qilish!)
+  if (!p1) {
+    APP_STATE.passwordHash = null;
+    saveToLocalStorage(true);
+    closeSettingsModal();
+    showToast(I18N[APP_STATE.lang].passRemoved);
+    return;
+  }
+
+  if (p1 !== p2) {
+    alert(I18N[APP_STATE.lang].passMismatch);
+    return;
+  }
+
+  APP_STATE.passwordHash = await computeSHA256(p1);
+  saveToLocalStorage(true);
+  closeSettingsModal();
+  showToast(I18N[APP_STATE.lang].passSet);
+}
+
+/* ==========================================================================
+   CONTEXT MENU (RIGHT CLICK)
+   ========================================================================== */
+function onNodeContextMenu(nodeId, e) {
+  e.preventDefault();
+  e.stopPropagation();
+  contextTargetId = nodeId;
+
+  const menu = document.getElementById("context-menu");
+  menu.style.display = "block";
+  menu.style.left = `${Math.min(e.clientX, window.innerWidth - 200)}px`;
+  menu.style.top = `${Math.min(e.clientY, window.innerHeight - 180)}px`;
+}
+
+function closeContextMenu() {
+  document.getElementById("context-menu").style.display = "none";
+}
+
+window.addEventListener("click", () => closeContextMenu());
+
+function ctxOpenPrimary() {
+  if (contextTargetId) executeNodePrimaryAction(contextTargetId);
+  closeContextMenu();
+}
+
+function ctxInspect() {
+  if (contextTargetId) {
+    selectNode(contextTargetId);
+    openSidebar();
+  }
+  closeContextMenu();
+}
+
+function ctxAddChild() {
+  if (contextTargetId) addChildNode(contextTargetId);
+  closeContextMenu();
+}
+
+function ctxDelete() {
+  if (contextTargetId) deleteNodeWithConfirmation(contextTargetId);
+  closeContextMenu();
+}
+
+/* ==========================================================================
+   EMOJI PICKER
+   ========================================================================== */
+function openEmojiPicker(e, targetType) {
+  e.stopPropagation();
+  const popup = document.getElementById("emoji-popup");
+  popup.innerHTML = EMOJI_LIST.map(em => `
+    <button class="ep-btn" onclick="selectEmojiFromPopup('${em}', '${targetType}')">${em}</button>
+  `).join("");
+
+  popup.style.display = "grid";
+  popup.style.left = `${Math.min(e.clientX, window.innerWidth - 260)}px`;
+  popup.style.top = `${e.clientY + 10}px`;
+}
+
+function selectEmojiFromPopup(emoji, targetType) {
+  document.getElementById("emoji-popup").style.display = "none";
+  if (targetType === "node") {
+    setNodeEmoji(emoji);
+  }
+}
+
+window.addEventListener("click", (e) => {
+  if (!e.target.closest("#emoji-popup") && !e.target.closest("#sb-emoji-btn")) {
+    document.getElementById("emoji-popup").style.display = "none";
+  }
+});
+
+/* ==========================================================================
+   STORAGE & SELF-CONTAINED EXPORT ENGINE
+   ========================================================================== */
+function saveToLocalStorage(notify = true) {
+  scheduleCloudSave();
+  try {
+    localStorage.setItem("strategy_planner_v1", JSON.stringify(APP_STATE));
+    if (notify) showToast(I18N[APP_STATE.lang].saved);
+  } catch (err) {
+    console.error(err);
+    if (notify) showToast("⚠️ Xotira to'la! Iltimos, HTML eksport qilib oling.");
+  }
+}
+
+function exportSelfContainedHTML() {
+  saveToLocalStorage(false);
+
+  const doc = document.documentElement.cloneNode(true);
+
+  // If password is set, show auth overlay upon opening; otherwise keep it hidden!
+  const authOverlay = doc.querySelector("#auth-overlay");
+  if (authOverlay) {
+    authOverlay.style.display = APP_STATE.passwordHash ? "flex" : "none";
+  }
+
+  const app = doc.querySelector("#app");
+  if (app) app.style.display = "flex";
+  const sb = doc.querySelector("#sidebar");
+  if (sb) sb.classList.remove("open");
+  const ctx = doc.querySelector("#context-menu");
+  if (ctx) ctx.style.display = "none";
+  const ep = doc.querySelector("#emoji-popup");
+  if (ep) ep.style.display = "none";
+  const settingsModal = doc.querySelector("#settings-modal");
+  if (settingsModal) settingsModal.style.display = "none";
+  const noteModal = doc.querySelector("#note-preview-modal");
+  if (noteModal) noteModal.style.display = "none";
+  const lightbox = doc.querySelector("#media-lightbox");
+  if (lightbox) lightbox.style.display = "none";
+  const audioBar = doc.querySelector("#floating-audio-bar");
+  if (audioBar) audioBar.style.display = "none";
+
+  // Embed full data into #app-data script tag
+  const dataTag = doc.querySelector("#app-data");
+  if (dataTag) {
+    dataTag.textContent = JSON.stringify(APP_STATE);
+  }
+
+  const exportDoc = '<!DOCTYPE html>\n<html lang="' + (APP_STATE.lang || "uz") + '">\n' + doc.innerHTML + '\n</html>';
+
+  const blob = new Blob([exportDoc], { type: "text/html;charset=utf-8" });
+  const downloadUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = downloadUrl;
+  a.download = `Strategy_Planner_${new Date().toISOString().slice(0,10)}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(downloadUrl);
+
+  showToast(I18N[APP_STATE.lang].exported);
+}
+
+/* ==========================================================================
+   HELPERS & KEYBOARD SHORTCUTS
+   ========================================================================== */
+function showToast(msg) {
+  const box = document.getElementById("toast-box");
+  const msgEl = document.getElementById("toast-msg");
+  msgEl.textContent = msg;
+  box.classList.add("show");
+  clearTimeout(box._timer);
+  box._timer = setTimeout(() => box.classList.remove("show"), 3000);
+}
+
+function escapeHTML(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+window.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+    e.preventDefault();
+    saveToLocalStorage(true);
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "e") {
+    e.preventDefault();
+    exportSelfContainedHTML();
+  }
+  if (e.key === "Escape") {
+    closeSidebar();
+    closeContextMenu();
+    closeSettingsModal();
+    closeNotePreview();
+    closeLightbox();
+  }
+});
+
+/* ==========================================================================
+   TELEGRAM MINI APP INTEGRATSIYASI
+   ========================================================================== */
+const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+let stateLoaded = false;
+let autoSaveTimer = null;
+
+function tgAtLeast(v) {
+  try { return !!(tg && tg.isVersionAtLeast && tg.isVersionAtLeast(v)); } catch (e) { return false; }
+}
+
+function applyViewportHeight() {
+  let h = window.innerHeight;
+  if (tg && tg.platform && tg.platform !== "unknown" && tg.viewportHeight) h = tg.viewportHeight;
+  document.documentElement.style.setProperty("--app-h", Math.round(h) + "px");
+}
+
+function initTelegram() {
+  applyViewportHeight();
+  window.addEventListener("resize", applyViewportHeight);
+
+  // Ekran burilganda (tik <-> yotiq) xaritani yangi o'lchamga moslab qo'yamiz
+  try {
+    const mq = window.matchMedia("(orientation: portrait)");
+    const onRotate = () => setTimeout(() => { applyViewportHeight(); resetCanvasView(); }, 300);
+    if (mq.addEventListener) mq.addEventListener("change", onRotate); else if (mq.addListener) mq.addListener(onRotate);
+  } catch (e) {}
+
+  // Mini App yopilayotganda ham saqlab qolamiz
+  document.addEventListener("visibilitychange", () => { if (document.hidden && stateLoaded) saveToLocalStorage(false); });
+  window.addEventListener("pagehide", () => { if (stateLoaded) saveToLocalStorage(false); });
+
+  if (!tg) return;
+  try { tg.ready(); } catch (e) {}
+  try { tg.expand(); } catch (e) {}
+  if (tgAtLeast("7.7")) { try { tg.disableVerticalSwipes(); } catch (e) {} }   // xaritani pastga surganda ilova yopilib ketmasin
+  if (tgAtLeast("6.1")) { try { tg.setBackgroundColor("#f8fafc"); } catch (e) {} }
+  if (tgAtLeast("6.9")) { try { tg.setHeaderColor("#ffffff"); } catch (e) {} }
+  try { tg.onEvent("viewportChanged", applyViewportHeight); } catch (e) {}
+  if (tgAtLeast("6.1") && tg.BackButton) { try { tg.BackButton.onClick(tgBack); } catch (e) {} }
+}
+
+function tgBack() {
+  const sb = document.getElementById("sidebar");
+  if (sb && sb.classList.contains("open")) closeSidebar();
+  else navGoBack();
+}
+
+function syncTgBackButton() {
+  if (!tg || !tgAtLeast("6.1") || !tg.BackButton) return;
+  const sb = document.getElementById("sidebar");
+  const show = currentPath.length > 0 || !!(sb && sb.classList.contains("open"));
+  try { if (show) tg.BackButton.show(); else tg.BackButton.hide(); } catch (e) {}
+}
+
+function scheduleAutoSave() {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => saveToLocalStorage(false), 700);
+}
+
+/* ---- Telegram CloudStorage zaxira nusxasi (faqat matn/tuzilma; rasm, video, audio kiritilmaydi) ---- */
+const CLOUD_PREFIX = "pl_";
+const CLOUD_CHUNK = 3000;
+let cloudTimer = null, cloudBusy = false, cloudDirty = false, cloudLastCount = 0, cloudCache = {};
+
+function cloudAvailable() {
+  return !!(tg && tg.CloudStorage && tgAtLeast("6.9"));
+}
+
+function cloudSnapshot() {
+  return JSON.stringify(APP_STATE, (k, v) => (k === "data" && typeof v === "string" && v.indexOf("data:") === 0) ? undefined : v);
+}
+
+function scheduleCloudSave() {
+  if (!cloudAvailable() || !stateLoaded) return;
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(cloudSave, 2000);
+}
+
+async function cloudSave() {
+  if (!cloudAvailable()) return;
+  if (cloudBusy) { cloudDirty = true; return; }
+  cloudBusy = true;
+  try {
+    const json = cloudSnapshot();
+    const n = Math.ceil(json.length / CLOUD_CHUNK);
+    if (n > 900) return;
+    const set = (k, v) => new Promise((res) => tg.CloudStorage.setItem(k, v, () => res()));
+    for (let i = 0; i < n; i++) {
+      const part = json.slice(i * CLOUD_CHUNK, (i + 1) * CLOUD_CHUNK);
+      if (cloudCache[i] !== part) {
+        await set(CLOUD_PREFIX + i, part);
+        cloudCache[i] = part;
+      }
+    }
+    await set(CLOUD_PREFIX + "n", String(n));
+    if (cloudLastCount > n) {
+      const extra = [];
+      for (let i = n; i < cloudLastCount; i++) { extra.push(CLOUD_PREFIX + i); delete cloudCache[i]; }
+      await new Promise((res) => tg.CloudStorage.removeItems(extra, () => res()));
+    }
+    cloudLastCount = n;
+  } catch (e) {
+    console.error(e);
+  } finally {
+    cloudBusy = false;
+    if (cloudDirty) { cloudDirty = false; scheduleCloudSave(); }
+  }
+}
+
+function cloudLoad() {
+  return new Promise((resolve) => {
+    if (!cloudAvailable()) return resolve(null);
+    let done = false;
+    const timer = setTimeout(() => { if (!done) { done = true; resolve(null); } }, 2500);
+    const finish = (val) => { if (done) return; done = true; clearTimeout(timer); resolve(val); };
+    try {
+      tg.CloudStorage.getItem(CLOUD_PREFIX + "n", (err, val) => {
+        const n = parseInt(val, 10);
+        if (err || !n) return finish(null);
+        const keys = [];
+        for (let i = 0; i < n; i++) keys.push(CLOUD_PREFIX + i);
+        tg.CloudStorage.getItems(keys, (err2, vals) => {
+          if (err2 || !vals) return finish(null);
+          try {
+            cloudLastCount = n;
+            const json = keys.map((k) => vals[k] || "").join("");
+            keys.forEach((k, i) => { cloudCache[i] = vals[k] || ""; });
+            finish(JSON.parse(json));
+          } catch (e) { finish(null); }
+        });
+      });
+    } catch (e) { finish(null); }
+  });
+}
+
+// Boot
+window.addEventListener("DOMContentLoaded", initMindVault);
+</script>
+
+
+
+
+
+</body>
+</html>
